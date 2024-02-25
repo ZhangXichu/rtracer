@@ -2,39 +2,54 @@
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/matx.hpp>
+#include "opencv2/core/core.hpp"
 
 #include "ray.hpp"
 #include "utils.hpp"
 
 int main()
 {
-    int num_cols = 400;
-    int num_rows = 300;
+    double aspect_ratio = 4.0 / 3.0;
+    int img_width = 400;
 
-    cv::Mat img(num_rows, num_cols, CV_8UC3);
+    // calculate the image height
+    int img_height = static_cast<int>(img_width / aspect_ratio);
 
-    // direction vectors
-    cv::Vec3d lower_left(3, 0, 0);
-    cv::Vec3d horizontal(3, 4, 0);
-    cv::Vec3d vertical(1.5, 0, 0);
-    cv::Vec3d center(1.5, 2, 0); // doesn't affect the results
+    cv::Mat img(img_height, img_width, CV_8UC3);
+    
+    double focal_length = 1.0;
+    double view_pt_height = 2.0;
+    double view_pt_width = view_pt_height * (static_cast<double>(img_width) / img_height);
 
-    for (int i = 0; i < num_rows; i++ ) {
-        for (int j = 0; j < num_cols; j++) {
-            // cv::Vec3d v(i/num_rows, j/num_rows, 0.2);
-            double u = double(i) / num_rows;
-            double v = double(j) / num_cols;
+    std::cout << "view_pt_width: " << view_pt_width << std::endl; 
 
-            Ray ray(center, lower_left + u*horizontal + v*vertical);
+    // Calculate the vectors across the horizontal and down the vertical viewport edges.
+    auto view_pt_u = cv::Vec3d(view_pt_width, 0, 0);
+    auto view_pt_v = cv::Vec3d(0, -view_pt_height, 0);
 
-            cv::Vec3d col = color(ray);
+    // Calculate the horizontal and vertical delta vectors from pixel to pixel.
+    auto pixel_delta_u = view_pt_u / img_width;
+    auto pixel_delta_v = view_pt_v / img_height;
 
-            // convert color values from double (0.0 to 1.0) to int (0 to 255)
-            int ir = static_cast<int>(255.99 * col[0]);
-            int ig = static_cast<int>(255.99 * col[1]);
-            int ib = static_cast<int>(255.99 * col[2]);
+    // Calculate the location of the upper left pixel.
+    cv::Vec3d camera_center(0, 0, 0);
+    auto view_pt_upper_left = camera_center - cv::Vec3d(0, 0, focal_length) - view_pt_u/2 - view_pt_v/2;
 
-            img.at<cv::Vec3b>(num_rows - i - 1, j) = cv::Vec3b(ib, ig, ir);
+    auto pixel00_loc = view_pt_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+
+    for (int j = 0; j < img_height; j++) {
+        for (int i = 0; i < img_width; i++) {
+            auto pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
+            auto ray_direction = pixel_center - camera_center;
+            Ray ray(camera_center, ray_direction);
+
+            Color pixel_color = ray_color(ray);
+
+            int ir = static_cast<int>(255.99 * pixel_color[0]);
+            int ig = static_cast<int>(255.99 * pixel_color[1]);
+            int ib = static_cast<int>(255.99 * pixel_color[2]);
+
+            img.at<cv::Vec3b>(j, i) = cv::Vec3b(ib, ig, ir);
         }
     }
 
