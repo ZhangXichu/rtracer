@@ -11,14 +11,13 @@ int main()
     int num_cols = 400;
     int num_rows = 300;
 
-    // std::cout << "P3\n" << num_cols << " " << num_rows << "\n255\n";
-
     cv::Mat img(num_rows, num_cols, CV_8UC3);
 
+    // direction vectors
     cv::Vec3d lower_left(3, 0, 0);
-    cv::Vec3d horizontal(1.5, 6, 0);
-    cv::Vec3d vertical(-1.5, 2, 0);
-    cv::Vec3d center(1.5, 2, 0);
+    cv::Vec3d horizontal(3, 4, 0);
+    cv::Vec3d vertical(1.5, 0, 0);
+    cv::Vec3d center(1.5, 2, 0); // doesn't affect the results
 
     for (int i = 0; i < num_rows; i++ ) {
         for (int j = 0; j < num_cols; j++) {
@@ -35,7 +34,7 @@ int main()
             int ig = static_cast<int>(255.99 * col[1]);
             int ib = static_cast<int>(255.99 * col[2]);
 
-            img.at<cv::Vec3b>(i, j) = cv::Vec3b(ib, ig, ir);
+            img.at<cv::Vec3b>(num_rows - i - 1, j) = cv::Vec3b(ib, ig, ir);
         }
     }
 
