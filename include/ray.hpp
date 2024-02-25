@@ -15,7 +15,9 @@ public:
     
     cv::Vec3d origin() const { return A; }
     cv::Vec3d direction() const { return B; }
-    cv::Vec3d point_at_parameter(double t) { return A + t*B; }
+    cv::Vec3d at(double t) const {
+         return A + t*B; 
+    }
 
     cv::Vec3d A;
     cv::Vec3d B;

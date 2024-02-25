@@ -10,7 +10,7 @@
 int main()
 {
     double aspect_ratio = 4.0 / 3.0;
-    int img_width = 400;
+    int img_width = 800;
 
     // calculate the image height
     int img_height = static_cast<int>(img_width / aspect_ratio);
