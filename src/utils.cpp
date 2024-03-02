@@ -15,9 +15,11 @@ double hit_sphere(const cv::Vec3d& center, double radius, const Ray& ray)
     cv::Vec3d v_oc = ray.origin() - center;
     
     double a = ray.direction().dot(ray.direction());
-    double b = 2.0 * v_oc.dot(ray.direction());
+    // double b = 2.0 * v_oc.dot(ray.direction());
+    double half_b = v_oc.dot(ray.direction());
     double c = v_oc.dot(v_oc) - radius * radius;
-    double discreminant = b*b - 4*a*c;
+    // double discreminant = b*b - 4*a*c;
+    double discreminant = half_b * half_b - a*c;
 
     // std::cout << "a = " << a << ", b = " <<  b << ", c = " << c << ", discreminant = " << discreminant << std::endl;
 
@@ -25,7 +27,7 @@ double hit_sphere(const cv::Vec3d& center, double radius, const Ray& ray)
         return -1.0;
     } else {
         // std::cout << "(-b - sqrt(discreminant)) / (2.0*a) = " << (-b - sqrt(discreminant)) / (2.0*a) << std::endl;
-        return (-b - sqrt(discreminant)) / (2.0*a);
+        return (-half_b - sqrt(discreminant)) / a;
     }
 }
 
@@ -38,7 +40,7 @@ Color ray_color(const Ray& ray)
     // std::cout << "d = " << d << std::endl;
     
     if (d > 0) {
-        std::cout << "d = " << d << std::endl;
+        // std::cout << "d = " << d << std::endl;
 
         cv::Vec3d norm = unit_vector(ray.at(d) - center_s);
         return 0.5 * Color(norm[0]+1, norm[1]+1, norm[2]+1);

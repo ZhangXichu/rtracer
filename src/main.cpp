@@ -53,7 +53,7 @@ int main()
         }
     }
 
-    cv::imwrite("/workspace/output/blue_grad.png", img);
+    cv::imwrite("/workspace/output/norm.png", img);
 
     return 0;
 }
