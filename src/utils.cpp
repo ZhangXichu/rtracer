@@ -27,28 +27,6 @@ double hit_sphere(const cv::Vec3d& center, double radius, const Ray& ray)
     }
 }
 
-Color ray_color(const Ray& ray)
-{
-    cv::Vec3d center_s(0.0, 0.0, -1.0);
-
-    auto d = hit_sphere(center_s, 0.5, ray);
-    
-    if (d > 0) {
-        // std::cout << "d = " << d << std::endl;
-
-        cv::Vec3d norm = unit_vector(ray.at(d) - center_s);
-        return 0.5 * Color(norm[0]+1, norm[1]+1, norm[2]+1);
-    }
-
-    cv::Vec3d unit_direction = unit_vector(ray.direction());
-    double t = 0.5 * (unit_direction[1] + 1.0); // normalize y-axis range to [0, 1]
-
-    Color v_e(1.0, 1.0, 1.0); // white
-    Color v(0.075, 0.576, 0.929); // light blue
-
-    return (1.0-t)*v_e + t*v; // linear interpolation
-}
-
 
 Color ray_color(const Ray& ray, const Hittable& world) 
 {
