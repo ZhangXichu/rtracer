@@ -15,7 +15,8 @@ add_executable(rtracer
                 src/utils.cpp
                 src/sphere.cpp
                 src/hittable.cpp
-                src/hittable_list.cpp)
+                src/hittable_list.cpp
+                src/interval.cpp)
 
 target_include_directories(rtracer PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(rtracer ${OpenCV_LIBS})
@@ -23,7 +24,9 @@ target_sources(rtracer
                 PRIVATE 
                 ${CMAKE_SOURCE_DIR}/include/ray.hpp
                 ${CMAKE_SOURCE_DIR}/include/utils.hpp
+                ${CMAKE_SOURCE_DIR}/include/constants.hpp
                 ${CMAKE_SOURCE_DIR}/include/datatypes.hpp
                 ${CMAKE_SOURCE_DIR}/include/hittable.hpp
                 ${CMAKE_SOURCE_DIR}/include/hittable_list.hpp
-                ${CMAKE_SOURCE_DIR}/include/sphere.hpp)
+                ${CMAKE_SOURCE_DIR}/include/sphere.hpp
+                ${CMAKE_SOURCE_DIR}/include/interval.hpp)

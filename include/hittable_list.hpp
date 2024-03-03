@@ -22,7 +22,7 @@ public:
         objs.push_back(obj);
     }
 
-    bool hit(const Ray& ray, double ray_tmain, double ray_tmax, HitRecord& record) const override;
+    bool hit(const Ray& ray, Interval r_interval, HitRecord& record) const override;
 
 };
 

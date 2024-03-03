@@ -4,8 +4,10 @@
 #include <opencv2/core/matx.hpp>
 #include "opencv2/core/core.hpp"
 
-#include "ray.hpp"
-#include "utils.hpp"
+#include <ray.hpp>
+#include <utils.hpp>
+#include <hittable.hpp>
+#include <sphere.hpp>
 
 int main()
 {
@@ -14,6 +16,14 @@ int main()
 
     // calculate the image height
     int img_height = static_cast<int>(img_width / aspect_ratio);
+    img_height = (img_height < 1) ? 1 : img_height;
+
+    // World
+
+    HittableList world;
+
+    world.add(std::make_shared<Sphere>(Point3(0, -100.5, -1), 100));
+    world.add(std::make_shared<Sphere>(Point3(0, 0, -1), 0.5));
 
     cv::Mat img(img_height, img_width, CV_8UC3);
     
@@ -43,7 +53,8 @@ int main()
             auto ray_direction = pixel_center - camera_center;
             Ray ray(camera_center, ray_direction);
 
-            Color pixel_color = ray_color(ray);
+            // Color pixel_color = ray_color(ray);
+            Color pixel_color = ray_color(ray, world);
 
             int ir = static_cast<int>(255.99 * pixel_color[0]);
             int ig = static_cast<int>(255.99 * pixel_color[1]);
@@ -53,7 +64,7 @@ int main()
         }
     }
 
-    cv::imwrite("/workspace/output/norm.png", img);
+    cv::imwrite("/workspace/output/world.png", img);
 
     return 0;
 }
