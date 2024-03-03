@@ -26,15 +26,3 @@ double hit_sphere(const cv::Vec3d& center, double radius, const Ray& ray)
         return (-half_b - sqrt(discreminant)) / a;
     }
 }
-
-
-Color ray_color(const Ray& ray, const Hittable& world) 
-{
-    HitRecord record;
-    if (world.hit(ray, Interval(0, R_INFINITY), record)) {
-        return 0.5 * (record.normal + Color(1, 1, 1));
-    }
-    cv::Vec3d unit_direction = unit_vector(ray.direction());
-    auto a = 0.5 * (unit_direction[1] + 1.0);
-    return (1.0 - a) * Color(1.0, 1.0, 1.0) + a*Color(0.5, 0.7, 1.0);
-}
