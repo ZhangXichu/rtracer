@@ -12,11 +12,18 @@ message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
 
 add_executable(rtracer 
                 src/main.cpp
-                src/utils.cpp)
+                src/utils.cpp
+                src/sphere.cpp
+                src/hittable.cpp
+                src/hittable_list.cpp)
 
 target_include_directories(rtracer PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(rtracer ${OpenCV_LIBS})
 target_sources(rtracer 
                 PRIVATE 
                 ${CMAKE_SOURCE_DIR}/include/ray.hpp
-                ${CMAKE_SOURCE_DIR}/include/utils.hpp)
+                ${CMAKE_SOURCE_DIR}/include/utils.hpp
+                ${CMAKE_SOURCE_DIR}/include/datatypes.hpp
+                ${CMAKE_SOURCE_DIR}/include/hittable.hpp
+                ${CMAKE_SOURCE_DIR}/include/hittable_list.hpp
+                ${CMAKE_SOURCE_DIR}/include/sphere.hpp)

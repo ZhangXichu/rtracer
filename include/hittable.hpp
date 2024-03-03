@@ -9,6 +9,9 @@ struct HitRecord {
     Point3 p;
     cv::Vec3d normal;
     double t;
+    bool front_face;
+
+    void set_face_normal(const Ray& r, const cv::Vec3d& outward_normal);
 };
 
 
