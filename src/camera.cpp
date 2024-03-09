@@ -15,7 +15,7 @@ void Camera::render(const Hittable& world)
             Color pixel_color(0, 0, 0);
             for (int sample = 0; sample < sample_per_pixel; ++sample) {
                 Ray ray = get_ray(i, j);
-                pixel_color += ray_color(ray, world);
+                pixel_color += ray_color(ray, max_depth, world);
             }
             img.at<cv::Vec3b>(j, i) = write_color(pixel_color, sample_per_pixel);
 
@@ -55,11 +55,19 @@ void Camera::initialize()
     _pixel00_loc = view_pt_upper_left + 0.5 * (_pixel_delta_u + _pixel_delta_v);
 }
 
-Color Camera::ray_color(const Ray& ray, const Hittable& world) const
+Color Camera::ray_color(const Ray& ray, int depth, const Hittable& world) const
 {
     HitRecord record;
+
+    if (depth <= 0)
+    {
+        return Color(0, 0, 0);
+    }
+
     if (world.hit(ray, Interval(0, R_INFINITY), record)) {
-        return 0.5 * (record.normal + Color(1, 1, 1));
+        cv::Vec3d direction = random_on_hemisphere(record.normal);
+        // return 0.5 * (record.normal + Color(1, 1, 1));
+        return 0.5 * ray_color(Ray(record.p, direction), depth-1, world); // gray : 50% of the color bounce off
     }
     cv::Vec3d unit_direction = unit_vector(ray.direction());
     auto a = 0.5 * (unit_direction[1] + 1.0);

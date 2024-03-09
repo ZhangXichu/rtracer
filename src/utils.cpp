@@ -9,6 +9,41 @@ cv::Vec3d unit_vector(const cv::Vec3d v)
     return v / length;
 }
 
+cv::Vec3d random_in_unit_sphere()
+{
+    while (true) {
+        auto p = random_vector(-1, 1);
+        if (p.dot(p) < 1)
+            return p;
+    }
+}
+
+cv::Vec3d random_unit_vector()
+{
+    return unit_vector(random_in_unit_sphere());
+}
+
+cv::Vec3d random_on_hemisphere(const cv::Vec3d& normal)
+{
+    cv::Vec3d on_unit_sphere = random_unit_vector();
+    if (on_unit_sphere.dot(normal) > 0.0) // in the same hemisphere as the normal
+    {
+        return on_unit_sphere;
+    } else {
+        return -on_unit_sphere;
+    }
+}
+
+cv::Vec3d random_vector()
+{
+    return cv::Vec3d(random_double(), random_double(), random_double());
+}
+
+cv::Vec3d random_vector(double min, double max)
+{
+    return cv::Vec3d(random_double(min, max), random_double(min, max), random_double(min, max));
+}
+
 // checks if a ray hits the sphere
 double hit_sphere(const cv::Vec3d& center, double radius, const Ray& ray)
 {
