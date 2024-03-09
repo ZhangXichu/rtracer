@@ -17,7 +17,8 @@ add_executable(rtracer
                 src/hittable.cpp
                 src/hittable_list.cpp
                 src/interval.cpp
-                src/camera.cpp)
+                src/camera.cpp
+                src/color.cpp)
 
 target_include_directories(rtracer PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(rtracer ${OpenCV_LIBS})
@@ -31,4 +32,5 @@ target_sources(rtracer
                 ${CMAKE_SOURCE_DIR}/include/hittable_list.hpp
                 ${CMAKE_SOURCE_DIR}/include/sphere.hpp
                 ${CMAKE_SOURCE_DIR}/include/interval.hpp
-                ${CMAKE_SOURCE_DIR}/include/camera.hpp)
+                ${CMAKE_SOURCE_DIR}/include/camera.hpp
+                ${CMAKE_SOURCE_DIR}/include/color.hpp)

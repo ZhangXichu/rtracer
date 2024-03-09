@@ -12,6 +12,7 @@ class Camera {
 public:
     double aspect_ratio = 4.0 / 3.0;
     int img_width = 800;
+    int sample_per_pixel = 10;
 
     void render(const Hittable& world);
 
@@ -25,6 +26,8 @@ private:
     void initialize();
 
     Color ray_color(const Ray& ray, const Hittable& world) const;
+    Ray get_ray(int i, int j) const;
+    cv::Vec3d pixel_sample_square() const;
 
 };
 

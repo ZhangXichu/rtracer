@@ -2,6 +2,7 @@
 
 #include <utils.hpp>
 #include <camera.hpp>
+#include <color.hpp>
 
 void Camera::render(const Hittable& world)
 {
@@ -11,22 +12,17 @@ void Camera::render(const Hittable& world)
 
     for (int j = 0; j < _img_height; j++) {
         for (int i = 0; i < img_width; i++) {
-            auto pixel_center = _pixel00_loc + (i * _pixel_delta_u) + (j * _pixel_delta_v);
-            auto ray_direction = pixel_center - _camera_center;
-            Ray ray(_camera_center, ray_direction);
+            Color pixel_color(0, 0, 0);
+            for (int sample = 0; sample < sample_per_pixel; ++sample) {
+                Ray ray = get_ray(i, j);
+                pixel_color += ray_color(ray, world);
+            }
+            img.at<cv::Vec3b>(j, i) = write_color(pixel_color, sample_per_pixel);
 
-            // Color pixel_color = ray_color(ray);
-            Color pixel_color = ray_color(ray, world);
-
-            int ir = static_cast<int>(255.99 * pixel_color[0]);
-            int ig = static_cast<int>(255.99 * pixel_color[1]);
-            int ib = static_cast<int>(255.99 * pixel_color[2]);
-
-            img.at<cv::Vec3b>(j, i) = cv::Vec3b(ib, ig, ir);
         }
     }
 
-    cv::imwrite("/workspace/output/world.png", img);
+    cv::imwrite("/workspace/output/world2.png", img);
 }
 
 void Camera::initialize()
@@ -68,4 +64,25 @@ Color Camera::ray_color(const Ray& ray, const Hittable& world) const
     cv::Vec3d unit_direction = unit_vector(ray.direction());
     auto a = 0.5 * (unit_direction[1] + 1.0);
     return (1.0 - a) * Color(1.0, 1.0, 1.0) + a*Color(0.5, 0.7, 1.0);
+}
+
+Ray Camera::get_ray(int i, int j) const
+{
+    // get a radomly sampled camera ray for the pixel at location i, j
+    auto pixel_center = _pixel00_loc + (i * _pixel_delta_u) + (j * _pixel_delta_v);
+    auto pixel_sample = pixel_center + pixel_sample_square();
+
+    auto ray_origin = _camera_center;
+    auto ray_direction = pixel_sample - ray_origin;
+
+    return Ray(ray_origin, ray_direction);
+}
+
+cv::Vec3d Camera::pixel_sample_square() const 
+{
+    // Returns a random point in the square surrounding a pixel at the origin
+    auto px = -0.5 + random_double();
+    auto py = -0.5 + random_double();
+    return (px * _pixel_delta_u) + (py * _pixel_delta_v);
+
 }
