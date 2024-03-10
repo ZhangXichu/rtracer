@@ -9,6 +9,19 @@ cv::Vec3d unit_vector(const cv::Vec3d v)
     return v / length;
 }
 
+cv::Vec3d reflect(const cv::Vec3d& v, const cv::Vec3d& n)
+{
+    return v - 2*v.dot(n)*n;
+}
+
+
+bool near_zero(const cv::Vec3d v) 
+{
+    // return true if the vector is close to zero in all dimensions
+    auto s = 1e-8;
+    return (fabs(v[0]) < s) && (fabs(v[1]) < s) && (fabs(v[2]) < s);
+}
+
 cv::Vec3d random_in_unit_sphere()
 {
     while (true) {

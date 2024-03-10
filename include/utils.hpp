@@ -10,6 +10,8 @@
 #include <cstdlib>
 
 cv::Vec3d unit_vector(const cv::Vec3d v);
+cv::Vec3d reflect(const cv::Vec3d& v, const cv::Vec3d& n);
+bool near_zero(const cv::Vec3d v);
 cv::Vec3d random_in_unit_sphere();
 cv::Vec3d random_unit_vector();
 cv::Vec3d random_on_hemisphere(const cv::Vec3d& normal);

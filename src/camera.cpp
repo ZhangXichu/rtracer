@@ -3,6 +3,7 @@
 #include <utils.hpp>
 #include <camera.hpp>
 #include <color.hpp>
+#include <material.hpp>
 
 void Camera::render(const Hittable& world)
 {
@@ -22,7 +23,7 @@ void Camera::render(const Hittable& world)
         }
     }
 
-    cv::imwrite("/workspace/output/world_lambert.png", img);
+    cv::imwrite("/workspace/output/world_metal.png", img);
 }
 
 void Camera::initialize()
@@ -65,9 +66,18 @@ Color Camera::ray_color(const Ray& ray, int depth, const Hittable& world) const
     }
 
     if (world.hit(ray, Interval(0.001, R_INFINITY), record)) { // ignore hits that are very close to the calculated intersection point 
-        // cv::Vec3d direction = random_on_hemisphere(record.normal);
-        cv::Vec3d direction = record.normal + random_unit_vector();
-        return 0.5 * ray_color(Ray(record.p, direction), depth-1, world); // gray : 50% of the color bounce off
+        // cv::Vec3d direction = record.normal + random_unit_vector();
+        // return 0.5 * ray_color(Ray(record.p, direction), depth-1, world); // gray : 50% of the color bounce off
+
+        Ray scattered;
+        Color attenuation;
+        if (record.material->scatter(ray, record, attenuation, scattered))
+        {
+            Color scattered_color = ray_color(scattered, depth - 1, world);
+            // return attenuation * ray_color(scattered, depth-1, world);
+            return Color(attenuation[0] * scattered_color[0], attenuation[1] * scattered_color[1], attenuation[2] * scattered_color[2]);
+        }
+        return Color(0, 0, 0);
     }
     cv::Vec3d unit_direction = unit_vector(ray.direction());
     auto a = 0.5 * (unit_direction[1] + 1.0);

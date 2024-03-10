@@ -5,10 +5,14 @@
 #include <datatypes.hpp>
 #include <ray.hpp>
 #include <interval.hpp>
+#include <hittable.hpp>
+
+class Material;
 
 struct HitRecord {
     Point3 p;
     cv::Vec3d normal;
+    std::shared_ptr<Material> material;
     double t;
     bool front_face;
 

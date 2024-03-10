@@ -1,7 +1,7 @@
 #include <sphere.hpp>
 
-Sphere::Sphere(Point3 center, double radius)
-    : _center(center), _radius(radius) {}
+Sphere::Sphere(Point3 center, double radius, std::shared_ptr<Material> material)
+    : _center(center), _radius(radius),  _material(material){}
 
 bool Sphere::hit(const Ray& ray, Interval r_interval, HitRecord& record) const 
 {
@@ -31,6 +31,7 @@ bool Sphere::hit(const Ray& ray, Interval r_interval, HitRecord& record) const
     cv::Vec3d outward_normal = (record.p - _center) / _radius;
 
     record.set_face_normal(ray, outward_normal);
+    record.material = _material;
 
     return true;
 
