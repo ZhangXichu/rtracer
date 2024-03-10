@@ -64,7 +64,7 @@ Color Camera::ray_color(const Ray& ray, int depth, const Hittable& world) const
         return Color(0, 0, 0);
     }
 
-    if (world.hit(ray, Interval(0, R_INFINITY), record)) {
+    if (world.hit(ray, Interval(0.001, R_INFINITY), record)) { // ignore hits that are very close to the calculated intersection point 
         cv::Vec3d direction = random_on_hemisphere(record.normal);
         // return 0.5 * (record.normal + Color(1, 1, 1));
         return 0.5 * ray_color(Ray(record.p, direction), depth-1, world); // gray : 50% of the color bounce off
