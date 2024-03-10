@@ -9,9 +9,14 @@ Color write_color(Color pixel_color, int sample_per_pixel)
     auto b = pixel_color[2];
 
     auto scale = 1.0 / sample_per_pixel;
-    r = r * scale; // Apply gamma correction with gamma=2.0
+    r = r * scale; 
     g = g * scale;
     b = b * scale;
+
+    // apply the linear to gamma transform
+    r = linear_to_gamma(r);
+    g = linear_to_gamma(g);
+    b = linear_to_gamma(b);
 
     static const Interval intensity(0.000, 0.999);
 

@@ -22,7 +22,7 @@ void Camera::render(const Hittable& world)
         }
     }
 
-    cv::imwrite("/workspace/output/world2.png", img);
+    cv::imwrite("/workspace/output/world_lambert.png", img);
 }
 
 void Camera::initialize()
@@ -65,8 +65,8 @@ Color Camera::ray_color(const Ray& ray, int depth, const Hittable& world) const
     }
 
     if (world.hit(ray, Interval(0.001, R_INFINITY), record)) { // ignore hits that are very close to the calculated intersection point 
-        cv::Vec3d direction = random_on_hemisphere(record.normal);
-        // return 0.5 * (record.normal + Color(1, 1, 1));
+        // cv::Vec3d direction = random_on_hemisphere(record.normal);
+        cv::Vec3d direction = record.normal + random_unit_vector();
         return 0.5 * ray_color(Ray(record.p, direction), depth-1, world); // gray : 50% of the color bounce off
     }
     cv::Vec3d unit_direction = unit_vector(ray.direction());
