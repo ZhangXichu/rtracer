@@ -11,19 +11,22 @@ void Camera::render(const Hittable& world)
 
     cv::Mat img(_img_height, img_width, CV_8UC3);
 
+    int num_rays = 5;
+
     for (int j = 0; j < _img_height; j++) {
         for (int i = 0; i < img_width; i++) {
             Color pixel_color(0, 0, 0);
             for (int sample = 0; sample < sample_per_pixel; ++sample) {
+
                 Ray ray = get_ray(i, j);
                 pixel_color += ray_color(ray, max_depth, world);
             }
-            img.at<cv::Vec3b>(j, i) = write_color(pixel_color, sample_per_pixel);
 
+            img.at<cv::Vec3b>(j, i) = write_color(pixel_color, sample_per_pixel);
         }
     }
 
-    cv::imwrite("/workspace/output/world_metal.png", img);
+    cv::imwrite("/workspace/output/world_glass.png", img);
 }
 
 void Camera::initialize()
@@ -66,15 +69,14 @@ Color Camera::ray_color(const Ray& ray, int depth, const Hittable& world) const
     }
 
     if (world.hit(ray, Interval(0.001, R_INFINITY), record)) { // ignore hits that are very close to the calculated intersection point 
-        // cv::Vec3d direction = record.normal + random_unit_vector();
-        // return 0.5 * ray_color(Ray(record.p, direction), depth-1, world); // gray : 50% of the color bounce off
 
         Ray scattered;
         Color attenuation;
         if (record.material->scatter(ray, record, attenuation, scattered))
         {
             Color scattered_color = ray_color(scattered, depth - 1, world);
-            // return attenuation * ray_color(scattered, depth-1, world);
+
+            // return ray_color(scattered, depth-1, world);
             return Color(attenuation[0] * scattered_color[0], attenuation[1] * scattered_color[1], attenuation[2] * scattered_color[2]);
         }
         return Color(0, 0, 0);

@@ -9,6 +9,11 @@ cv::Vec3d unit_vector(const cv::Vec3d v)
     return v / length;
 }
 
+cv::Vec3d pointwise(const cv::Vec3d v, const cv::Vec3d u)
+{
+    return cv::Vec3d(v[0]*u[0], v[1]*u[1], v[2]*u[2]);
+}
+
 cv::Vec3d reflect(const cv::Vec3d& v, const cv::Vec3d& n)
 {
     return v - 2*v.dot(n)*n;
@@ -25,7 +30,7 @@ bool near_zero(const cv::Vec3d v)
 cv::Vec3d random_in_unit_sphere()
 {
     while (true) {
-        auto p = random_vector(-1, 1);
+        auto p = random_vector();
         if (p.dot(p) < 1)
             return p;
     }
@@ -52,11 +57,6 @@ cv::Vec3d random_vector()
     return cv::Vec3d(random_double(), random_double(), random_double());
 }
 
-cv::Vec3d random_vector(double min, double max)
-{
-    return cv::Vec3d(random_double(min, max), random_double(min, max), random_double(min, max));
-}
-
 // checks if a ray hits the sphere
 double hit_sphere(const cv::Vec3d& center, double radius, const Ray& ray)
 {
@@ -70,7 +70,6 @@ double hit_sphere(const cv::Vec3d& center, double radius, const Ray& ray)
     if (discreminant < 0) {
         return -1.0;
     } else {
-        // std::cout << "(-b - sqrt(discreminant)) / (2.0*a) = " << (-b - sqrt(discreminant)) / (2.0*a) << std::endl;
         return (-half_b - sqrt(discreminant)) / a;
     }
 }

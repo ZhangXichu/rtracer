@@ -37,4 +37,14 @@ private:
 
 };
 
+class Dialectric : public Material {
+public:
+    Dialectric(double index_of_refraction);
+
+    bool scatter(const Ray& r_in, const HitRecord& record, Color& attenuation, Ray& scattered) const override;
+
+private:
+    double _index_of_refraction;
+};
+
 #endif
