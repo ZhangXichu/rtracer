@@ -27,12 +27,13 @@ private:
 
 class Metal : public Material {
 public:
-    Metal(const Color& albedo)
-        :_albedo(albedo) {};
+    Metal(const Color& albedo, double fuzziness)
+        :_albedo(albedo), _fuzziness(fuzziness < 1 ? fuzziness : 1) {};
     bool scatter(const Ray& r_in, const HitRecord& record, Color& attenuation, Ray& scattered) const override;
 
 private:
     Color _albedo;
+    double _fuzziness;
 
 };
 

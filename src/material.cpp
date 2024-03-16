@@ -21,8 +21,9 @@ bool Metal::scatter(const Ray& r_in, const HitRecord& record, Color& attenuation
 {
     cv::Vec3d reflected = reflect(unit_vector(r_in.direction()), record.normal);
 
-    scattered = Ray(record.p, reflected);
+    scattered = Ray(record.p, reflected + _fuzziness * random_unit_vector());
     attenuation = _albedo;
 
-    return true;
+    // refected ray should be on the same side of the surface as the normal vector
+    return (scattered.direction().dot(record.normal) > 0); 
 }
