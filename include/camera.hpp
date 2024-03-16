@@ -13,7 +13,7 @@ public:
     double aspect_ratio = 4.0 / 3.0;
     int img_width = 800;
     int sample_per_pixel = 10;
-    int max_depth = 3;
+    int max_depth = 50;
 
     void render(const Hittable& world);
 

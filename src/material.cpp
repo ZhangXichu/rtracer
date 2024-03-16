@@ -40,8 +40,6 @@ bool Dialectric::scatter(const Ray& r_in, const HitRecord& record, Color& attenu
 
     cv::Vec3d unit_direction = unit_vector(r_in.direction());
 
-    std::cout << "unit_direction: length : " << unit_direction.dot(unit_direction) << std::endl;
-
     cv::Vec3d refracted = refract(unit_direction, record.normal, refraction_ratio);
 
     scattered = Ray(record.p, refracted);

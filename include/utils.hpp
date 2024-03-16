@@ -18,7 +18,7 @@ inline cv::Vec3d refract(const cv::Vec3d& uv, const cv::Vec3d& n, double etai_ov
 {
     auto cos_theta = fmin((-uv).dot(n), 1.0);
 
-    std::cout << "cos_theta : " << cos_theta << std::endl;
+    // std::cout << "cos_theta : " << cos_theta << std::endl;
 
     cv::Vec3d r_out_perp = etai_over_etat * (uv + cos_theta * n); 
     cv::Vec3d r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.dot(r_out_perp))) * n;
