@@ -39,7 +39,12 @@ void Camera::initialize()
 
     // determine viewport dimensions
     double focal_length = 1.0;
-    double view_pt_height = 2.0;
+
+    auto theta = degrees_to_radians(vfov);
+    auto h = tan(theta/2);
+    // double view_pt_height = 2.0;
+    auto view_pt_height = 2 * h * focal_length;
+
     double view_pt_width = view_pt_height * (static_cast<double>(img_width) / _img_height);
 
     std::cout << "view_pt_width: " << view_pt_width << std::endl; 

@@ -15,6 +15,8 @@ public:
     int sample_per_pixel = 10;
     int max_depth = 50;
 
+    double vfov = 90; // vertial view angle (field of view)
+
     void render(const Hittable& world);
 
 private:
