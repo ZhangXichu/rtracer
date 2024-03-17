@@ -41,11 +41,10 @@ void Camera::initialize()
     // determine viewport dimensions
 
     // double focal_length = 1.0;
-    double focal_length = cv::norm(lookfrom - lookat);
+    // double focal_length = cv::norm(lookfrom - lookat);
     auto theta = degrees_to_radians(vfov);
     auto h = tan(theta/2);
-    // double view_pt_height = 2.0;
-    auto view_pt_height = 2 * h * focal_length;
+    auto view_pt_height = 2 * h * focus_dist;
     double view_pt_width = view_pt_height * (static_cast<double>(img_width) / _img_height);
 
     std::cout << "view_pt_width: " << view_pt_width << std::endl; 
@@ -56,8 +55,6 @@ void Camera::initialize()
     v = w.cross(u);
 
     // Calculate the vectors across the horizontal and down the vertical viewport edges.
-    // auto view_pt_u = cv::Vec3d(view_pt_width, 0, 0);
-    // auto view_pt_v = cv::Vec3d(0, -view_pt_height, 0);
     auto view_pt_u = view_pt_width * u; // vecor across viewport horizontal edge
     auto view_pt_v = view_pt_height * (-v); // vector down viewport vertical edge
 
@@ -66,10 +63,15 @@ void Camera::initialize()
     _pixel_delta_v = view_pt_v / _img_height;
 
     // Calculate the location of the upper left pixel.
-    // auto view_pt_upper_left = _camera_center - cv::Vec3d(0, 0, focal_length) - view_pt_u/2 - view_pt_v/2;
-    auto view_pt_upper_left =  _camera_center - (focal_length * w) - view_pt_u/2 - view_pt_v/2;
+    // now the focal length is replaced by the focus distance
+    auto view_pt_upper_left =  _camera_center - (focus_dist * w) - view_pt_u/2 - view_pt_v/2;
 
     _pixel00_loc = view_pt_upper_left + 0.5 * (_pixel_delta_u + _pixel_delta_v);
+
+    // calculate the camera defocus disk basis vectors
+    auto defocus_radius = focus_dist * tan(degrees_to_radians(defocus_angle / 2));
+    defocus_disk_u = u * defocus_radius;
+    defocus_disk_v = v * defocus_radius;
 }
 
 Color Camera::ray_color(const Ray& ray, int depth, const Hittable& world) const
@@ -102,10 +104,12 @@ Color Camera::ray_color(const Ray& ray, int depth, const Hittable& world) const
 Ray Camera::get_ray(int i, int j) const
 {
     // get a radomly sampled camera ray for the pixel at location i, j
+    // originates from  the camera defocus disk
     auto pixel_center = _pixel00_loc + (i * _pixel_delta_u) + (j * _pixel_delta_v);
     auto pixel_sample = pixel_center + pixel_sample_square();
 
-    auto ray_origin = _camera_center;
+    // auto ray_origin = _camera_center;
+    auto ray_origin = (defocus_angle <= 0) ? _camera_center : defocus_disk_sample();
     auto ray_direction = pixel_sample - ray_origin;
 
     return Ray(ray_origin, ray_direction);
@@ -118,4 +122,11 @@ cv::Vec3d Camera::pixel_sample_square() const
     auto py = -0.5 + random_double();
     return (px * _pixel_delta_u) + (py * _pixel_delta_v);
 
+}
+
+Point3 Camera::defocus_disk_sample() const
+{
+    // returns a random point in the camera defocus disk
+    auto p = random_in_unit_disk();
+    return _camera_center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
 }

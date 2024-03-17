@@ -26,7 +26,7 @@ int main()
     Camera camera;
 
     camera.aspect_ratio = 16.0 / 9.0;
-    camera.img_width = 800;
+    camera.img_width = 400;
     camera.sample_per_pixel = 80;
     camera.max_depth = 50;
 
@@ -34,6 +34,9 @@ int main()
     camera.lookfrom = cv::Vec3d(-2, 2, 1);
     camera.lookat = cv::Vec3d(0, 0, -1);
     camera.vup = cv::Vec3d(0, 1, 0);
+
+    camera.defocus_angle = 10;
+    camera.focus_dist = 3.4;
     
     camera.render(world);
 

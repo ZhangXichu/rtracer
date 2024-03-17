@@ -41,6 +41,18 @@ cv::Vec3d random_unit_vector()
     return unit_vector(random_in_unit_sphere());
 }
 
+cv::Vec3d random_in_unit_disk()
+{
+    while (true) 
+    {
+        auto p = cv::Vec3d(random_double(-1, 1), random_double(-1, 1), 0);
+        if (p.dot(p) < 1)
+        {
+            return p;
+        }
+    }
+}
+
 cv::Vec3d random_on_hemisphere(const cv::Vec3d& normal)
 {
     cv::Vec3d on_unit_sphere = random_unit_vector();
