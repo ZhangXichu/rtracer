@@ -35,31 +35,39 @@ void Camera::initialize()
     _img_height = static_cast<int>(img_width / aspect_ratio);
     _img_height = (_img_height < 1) ? 1 : _img_height;
 
-    _camera_center = Point3(0, 0, 0);
+    // _camera_center = Point3(0, 0, 0);
+    _camera_center = lookfrom;
 
     // determine viewport dimensions
-    double focal_length = 1.0;
 
+    // double focal_length = 1.0;
+    double focal_length = cv::norm(lookfrom - lookat);
     auto theta = degrees_to_radians(vfov);
     auto h = tan(theta/2);
     // double view_pt_height = 2.0;
     auto view_pt_height = 2 * h * focal_length;
-
     double view_pt_width = view_pt_height * (static_cast<double>(img_width) / _img_height);
 
     std::cout << "view_pt_width: " << view_pt_width << std::endl; 
 
+    // calculate the u, v, w unit basis vectors for the camera coordinate frame
+    w = unit_vector(lookfrom - lookat);
+    u = unit_vector(vup.cross(w));
+    v = w.cross(u);
+
     // Calculate the vectors across the horizontal and down the vertical viewport edges.
-    auto view_pt_u = cv::Vec3d(view_pt_width, 0, 0);
-    auto view_pt_v = cv::Vec3d(0, -view_pt_height, 0);
+    // auto view_pt_u = cv::Vec3d(view_pt_width, 0, 0);
+    // auto view_pt_v = cv::Vec3d(0, -view_pt_height, 0);
+    auto view_pt_u = view_pt_width * u; // vecor across viewport horizontal edge
+    auto view_pt_v = view_pt_height * (-v); // vector down viewport vertical edge
 
     // Calculate the horizontal and vertical delta vectors from pixel to pixel.
     _pixel_delta_u = view_pt_u / img_width;
     _pixel_delta_v = view_pt_v / _img_height;
 
     // Calculate the location of the upper left pixel.
-    
-    auto view_pt_upper_left = _camera_center - cv::Vec3d(0, 0, focal_length) - view_pt_u/2 - view_pt_v/2;
+    // auto view_pt_upper_left = _camera_center - cv::Vec3d(0, 0, focal_length) - view_pt_u/2 - view_pt_v/2;
+    auto view_pt_upper_left =  _camera_center - (focal_length * w) - view_pt_u/2 - view_pt_v/2;
 
     _pixel00_loc = view_pt_upper_left + 0.5 * (_pixel_delta_u + _pixel_delta_v);
 }

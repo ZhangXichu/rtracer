@@ -16,6 +16,9 @@ public:
     int max_depth = 50;
 
     double vfov = 90; // vertial view angle (field of view)
+    cv::Vec3d lookfrom = cv::Vec3d(0, 0, -1); // point camera is looking from
+    cv::Vec3d lookat = cv::Vec3d(0, 0, 0); // point camera is looking at
+    cv::Vec3d vup = cv::Vec3d(0, 1, 0); // camera relative "up" direction
 
     void render(const Hittable& world);
 
@@ -25,6 +28,7 @@ private:
     Point3 _pixel00_loc;
     cv::Vec3d _pixel_delta_u;
     cv::Vec3d _pixel_delta_v;
+    cv::Vec3d u, v, w; // camera frame bassis vectors
 
     void initialize();
 
