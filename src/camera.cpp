@@ -68,7 +68,7 @@ Color Camera::ray_color(const Ray& ray, int depth, const Hittable& world) const
         return Color(0, 0, 0);
     }
 
-    if (world.hit(ray, Interval(0.001, R_INFINITY), record)) { // ignore hits that are very close to the calculated intersection point 
+    if (world.hit(ray, Interval(0.005, R_INFINITY), record)) { // ignore hits that are very close to the calculated intersection point 
 
         Ray scattered;
         Color attenuation;

@@ -40,9 +40,25 @@ bool Dialectric::scatter(const Ray& r_in, const HitRecord& record, Color& attenu
 
     cv::Vec3d unit_direction = unit_vector(r_in.direction());
 
-    cv::Vec3d refracted = refract(unit_direction, record.normal, refraction_ratio);
+    double cos_theta = fmin((-unit_direction).dot(record.normal), 1.0);
+    double sin_theta = sqrt(1.0 - cos_theta*cos_theta);
 
-    scattered = Ray(record.p, refracted);
+    bool cannot_refract = refraction_ratio * sin_theta > 1.0;
+    cv::Vec3d direction;
+
+    if (cannot_refract)
+    {
+        direction = reflect(unit_direction, record.normal);
+    } else 
+    {
+        direction = refract(unit_direction, record.normal, refraction_ratio);
+    }
+
+    scattered = Ray(record.p, direction);
+
+    // cv::Vec3d refracted = refract(unit_direction, record.normal, refraction_ratio);
+
+    // scattered = Ray(record.p, refracted);
 
     return true;
 }
