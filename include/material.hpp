@@ -45,6 +45,10 @@ public:
 
 private:
     double _index_of_refraction;
+
+    // use Schlick's approximation for reflectivity
+    // since the reflectivity changes with angle
+    static double reflectance(double cosine, double ref_idx);
 };
 
 #endif
